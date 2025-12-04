@@ -98,10 +98,11 @@ func ValidParentheses(s string) bool {
 	var stack []rune
 
 	for _, c := range str {
-		if strings.Contains(openStr, string(c)) {
+
+		switch {
+		case strings.Contains(openStr, string(c)):
 			stack = append(stack, c)
-		}
-		if strings.Contains(closeStr, string(c)) {
+		case strings.Contains(closeStr, string(c)):
 			if len(stack) <= 0 {
 				return false
 			}
@@ -111,6 +112,21 @@ func ValidParentheses(s string) bool {
 			}
 			stack = stack[:len(stack)-1]
 		}
+		//	лишив як приклад варіанту рішення TODO:
+
+		//if strings.Contains(openStr, string(c)) {
+		//	stack = append(stack, c)
+		//}
+		//if strings.Contains(closeStr, string(c)) {
+		//	if len(stack) <= 0 {
+		//		return false
+		//	}
+		//	index := strings.Index(closeStr, string(c))
+		//	if stack[len(stack)-1] != rune(openStr[index]) {
+		//		return false
+		//	}
+		//	stack = stack[:len(stack)-1]
+		//}
 	}
 
 	return len(stack) == 0
@@ -125,6 +141,7 @@ func Increment(num string) int {
 		return 0
 	}
 
+	//	лишив як приклад варіанту рішення TODO:
 	//r, err := regexp.MatchString("^[01]+$", num)
 	//if err != nil || !r {
 	//	return 0
