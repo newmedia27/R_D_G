@@ -24,7 +24,7 @@ type node struct {
 func NewLruCache(capacity int) LruCache {
 	return &Cache{
 		capacity: capacity,
-		cache:    make(map[string]*list.Element),
+		cache:    make(map[string]*list.Element, capacity),
 		list:     list.New(),
 	}
 }
