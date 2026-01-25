@@ -11,7 +11,7 @@ func TestCollection_Put(t *testing.T) {
 	type fields struct {
 		Documents map[string]*Document
 		name      string
-		cfg       CollectionConfig
+		Cfg       CollectionConfig
 	}
 	type args struct {
 		doc Document
@@ -27,7 +27,7 @@ func TestCollection_Put(t *testing.T) {
 			fields: fields{
 				Documents: make(map[string]*Document),
 				name:      "users",
-				cfg: CollectionConfig{
+				Cfg: CollectionConfig{
 					PrimaryKey: "id",
 				},
 			},
@@ -72,7 +72,7 @@ func TestCollection_Put(t *testing.T) {
 			fields: fields{
 				Documents: make(map[string]*Document),
 				name:      "users",
-				cfg:       CollectionConfig{PrimaryKey: "id"},
+				Cfg:       CollectionConfig{PrimaryKey: "id"},
 			},
 			args: args{
 				doc: Document{
@@ -95,11 +95,11 @@ func TestCollection_Put(t *testing.T) {
 			c := &Collection{
 				Documents: tt.fields.Documents,
 				name:      tt.fields.name,
-				cfg:       tt.fields.cfg,
+				Cfg:       tt.fields.Cfg,
 			}
 
 			var id string
-			if f, ok := tt.args.doc.Fields[tt.fields.cfg.PrimaryKey]; ok && f.Type == DocumentFieldTypeString {
+			if f, ok := tt.args.doc.Fields[tt.fields.Cfg.PrimaryKey]; ok && f.Type == DocumentFieldTypeString {
 				id = f.Value.(string)
 			}
 
@@ -118,7 +118,7 @@ func TestCollection_Put(t *testing.T) {
 			assert.Equal(t, tt.args.doc, *d)
 			require.NotNil(t, d)
 
-			assert.Equal(t, tt.args.doc.Fields[tt.fields.cfg.PrimaryKey].Value, d.Fields[tt.fields.cfg.PrimaryKey].Value)
+			assert.Equal(t, tt.args.doc.Fields[tt.fields.Cfg.PrimaryKey].Value, d.Fields[tt.fields.Cfg.PrimaryKey].Value)
 		})
 	}
 }
@@ -127,7 +127,7 @@ func TestCollection_Get(t *testing.T) {
 	type fields struct {
 		Documents map[string]*Document
 		name      string
-		cfg       CollectionConfig
+		Cfg       CollectionConfig
 	}
 	type args struct {
 		key string
@@ -157,7 +157,7 @@ func TestCollection_Get(t *testing.T) {
 					},
 				},
 				name: "users",
-				cfg: CollectionConfig{
+				Cfg: CollectionConfig{
 					PrimaryKey: "id",
 				},
 			},
@@ -183,7 +183,7 @@ func TestCollection_Get(t *testing.T) {
 			fields: fields{
 				Documents: make(map[string]*Document),
 				name:      "empty",
-				cfg:       CollectionConfig{PrimaryKey: "id"},
+				Cfg:       CollectionConfig{PrimaryKey: "id"},
 			},
 			args: args{
 				key: "any-key",
@@ -197,7 +197,7 @@ func TestCollection_Get(t *testing.T) {
 			c := &Collection{
 				Documents: tt.fields.Documents,
 				name:      tt.fields.name,
-				cfg:       tt.fields.cfg,
+				Cfg:       tt.fields.Cfg,
 			}
 			got, err := c.Get(tt.args.key)
 
@@ -217,7 +217,7 @@ func TestCollection_Delete(t *testing.T) {
 	type fields struct {
 		Documents map[string]*Document
 		name      string
-		cfg       CollectionConfig
+		Cfg       CollectionConfig
 	}
 	type args struct {
 		key string
@@ -245,7 +245,7 @@ func TestCollection_Delete(t *testing.T) {
 					},
 				},
 				name: "users",
-				cfg: CollectionConfig{
+				Cfg: CollectionConfig{
 					PrimaryKey: "id",
 				},
 			},
@@ -259,7 +259,7 @@ func TestCollection_Delete(t *testing.T) {
 			fields: fields{
 				Documents: make(map[string]*Document),
 				name:      "users",
-				cfg:       CollectionConfig{PrimaryKey: "id"},
+				Cfg:       CollectionConfig{PrimaryKey: "id"},
 			},
 			args: args{
 				key: "non-existing-id",
@@ -272,7 +272,7 @@ func TestCollection_Delete(t *testing.T) {
 			c := &Collection{
 				Documents: tt.fields.Documents,
 				name:      tt.fields.name,
-				cfg:       tt.fields.cfg,
+				Cfg:       tt.fields.Cfg,
 			}
 			count := len(c.Documents)
 			ok := c.Delete(tt.args.key)
@@ -295,7 +295,7 @@ func TestCollection_List(t *testing.T) {
 	type fields struct {
 		Documents map[string]*Document
 		name      string
-		cfg       CollectionConfig
+		Cfg       CollectionConfig
 	}
 	tests := []struct {
 		name   string
@@ -348,7 +348,7 @@ func TestCollection_List(t *testing.T) {
 			c := &Collection{
 				Documents: tt.fields.Documents,
 				name:      tt.fields.name,
-				cfg:       tt.fields.cfg,
+				Cfg:       tt.fields.Cfg,
 			}
 			got := c.List()
 			assert.ElementsMatch(t, tt.want, got)

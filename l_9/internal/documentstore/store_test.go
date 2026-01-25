@@ -16,7 +16,7 @@ func TestStore_CreateCollection(t *testing.T) {
 	}
 	type args struct {
 		name string
-		cfg  *CollectionConfig
+		Cfg  *CollectionConfig
 	}
 	tests := []struct {
 		name    string
@@ -32,12 +32,12 @@ func TestStore_CreateCollection(t *testing.T) {
 			},
 			args: args{
 				name: "users",
-				cfg:  &CollectionConfig{PrimaryKey: "id"},
+				Cfg:  &CollectionConfig{PrimaryKey: "id"},
 			},
 			want: &Collection{
 				Documents: make(map[string]*Document),
 				name:      "users",
-				cfg:       CollectionConfig{PrimaryKey: "id"},
+				Cfg:       CollectionConfig{PrimaryKey: "id"},
 			},
 			wantErr: nil,
 		},
@@ -48,7 +48,7 @@ func TestStore_CreateCollection(t *testing.T) {
 			},
 			args: args{
 				name: "",
-				cfg:  &CollectionConfig{PrimaryKey: "id"},
+				Cfg:  &CollectionConfig{PrimaryKey: "id"},
 			},
 			want:    nil,
 			wantErr: ErrEmptyCollectionName,
@@ -60,13 +60,13 @@ func TestStore_CreateCollection(t *testing.T) {
 					"users": {
 						Documents: make(map[string]*Document),
 						name:      "users",
-						cfg:       CollectionConfig{PrimaryKey: "id"},
+						Cfg:       CollectionConfig{PrimaryKey: "id"},
 					},
 				},
 			},
 			args: args{
 				name: "users",
-				cfg:  &CollectionConfig{PrimaryKey: "id"},
+				Cfg:  &CollectionConfig{PrimaryKey: "id"},
 			},
 			want:    nil,
 			wantErr: ErrCollectionAlreadyExists},
@@ -76,7 +76,7 @@ func TestStore_CreateCollection(t *testing.T) {
 			s := &Store{
 				Collections: tt.fields.Collections,
 			}
-			got, err := s.CreateCollection(tt.args.name, tt.args.cfg)
+			got, err := s.CreateCollection(tt.args.name, tt.args.Cfg)
 			if tt.wantErr != nil {
 				assert.Error(t, err)
 				assert.ErrorIs(t, err, tt.wantErr)
@@ -87,7 +87,7 @@ func TestStore_CreateCollection(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, got)
 			assert.Equal(t, tt.want.name, got.name)
-			assert.Equal(t, tt.want.cfg, got.cfg)
+			assert.Equal(t, tt.want.Cfg, got.Cfg)
 			assert.NotNil(t, got.Documents)
 
 			col, ok := s.Collections[tt.args.name]
@@ -118,7 +118,7 @@ func TestStore_GetCollection(t *testing.T) {
 					"users": {
 						Documents: make(map[string]*Document),
 						name:      "users",
-						cfg:       CollectionConfig{PrimaryKey: "id"},
+						Cfg:       CollectionConfig{PrimaryKey: "id"},
 					},
 				},
 			},
@@ -128,7 +128,7 @@ func TestStore_GetCollection(t *testing.T) {
 			want: &Collection{
 				Documents: make(map[string]*Document),
 				name:      "users",
-				cfg:       CollectionConfig{PrimaryKey: "id"},
+				Cfg:       CollectionConfig{PrimaryKey: "id"},
 			},
 			wantErr: nil,
 		},
@@ -182,7 +182,7 @@ func TestStore_DeleteCollection(t *testing.T) {
 					"users": {
 						Documents: make(map[string]*Document),
 						name:      "users",
-						cfg:       CollectionConfig{PrimaryKey: "id"},
+						Cfg:       CollectionConfig{PrimaryKey: "id"},
 					},
 				},
 			},
@@ -287,7 +287,7 @@ func TestStore_DumpToFIle(t *testing.T) {
 					"users": {
 						Documents: make(map[string]*Document),
 						name:      "users",
-						cfg:       CollectionConfig{PrimaryKey: "id"},
+						Cfg:       CollectionConfig{PrimaryKey: "id"},
 					},
 				},
 			},
