@@ -39,21 +39,7 @@ func main() {
 
 	slog.SetDefault(slog.New(l))
 	store := documentstore.NewStore()
-	userCollection, err := store.CreateCollection("users", &documentstore.CollectionConfig{PrimaryKey: "id"})
-
-	if err != nil {
-		slog.Default().Warn(err.Error())
-	}
-
-	if err != nil {
-		slog.Default().Warn("Error create new collection")
-	}
-	err = userCollection.CreateIndex("age")
-	if err != nil {
-		slog.Default().Warn("Error create index", slog.Any("err", err))
-	}
-
-	userService := users.NewUserService(userCollection)
+	userService := users.NewUserService(store)
 
 	wg := sync.WaitGroup{}
 	ch := make(chan string)
@@ -84,7 +70,7 @@ func main() {
 		wg2.Add(1)
 		go func(userId string) {
 			defer wg2.Done()
-			_, err = userService.GetUser(userId)
+			_, err := userService.GetUser(userId)
 			if err != nil {
 				slog.Default().Warn("Error get user from file", slog.Any("err", err))
 			}
@@ -92,6 +78,7 @@ func main() {
 			if err != nil {
 				slog.Default().Warn("Error delete user from file", slog.Any("err", err))
 			}
+			//Slice тільки заради mutex, map -> оптимальніше!
 			idsMu.Lock()
 			for i, v := range ids {
 				if v == userId {

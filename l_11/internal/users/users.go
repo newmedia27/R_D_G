@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"routines/internal/documentstore"
@@ -21,13 +22,34 @@ type UserRequest struct {
 	Age  string `json:"age"`
 }
 
+const primaryKeyField = "id"
+const collectionName = "users"
+const indexFieldName = "age"
+
 type UserService struct {
 	coll documentstore.Collector
 }
 
-func NewUserService(coll documentstore.Collector) *UserService {
+func NewUserService(store *documentstore.Store) *UserService {
+	userCollection, ok := store.Collections[collectionName]
+	if !ok {
+		col, err := store.CreateCollection(collectionName, &documentstore.CollectionConfig{
+			PrimaryKey: primaryKeyField,
+		})
+
+		if err != nil {
+			//Сюди не маємо попадати, але помилка має бути обробленою!!!
+			slog.Default().Warn(err.Error())
+			panic(err)
+		}
+		userCollection = col
+		err = userCollection.CreateIndex(indexFieldName)
+		if err != nil {
+			slog.Default().Warn("Error create index", slog.Any("err", err))
+		}
+	}
 	return &UserService{
-		coll: coll,
+		coll: userCollection,
 	}
 }
 
