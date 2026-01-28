@@ -1,0 +1,60 @@
+{
+  "users": {
+    "Documents": {
+      "95e5962a-67da-4799-a270-8b4b3f11b16a": {
+        "Fields": {
+          "age": {
+            "Type": "string",
+            "Value": "18"
+          },
+          "id": {
+            "Type": "string",
+            "Value": "95e5962a-67da-4799-a270-8b4b3f11b16a"
+          },
+          "name": {
+            "Type": "string",
+            "Value": "Jane"
+          }
+        }
+      },
+      "db771fcf-00be-4fd0-9690-dbfa04b7dba1": {
+        "Fields": {
+          "age": {
+            "Type": "string",
+            "Value": "42"
+          },
+          "id": {
+            "Type": "string",
+            "Value": "db771fcf-00be-4fd0-9690-dbfa04b7dba1"
+          },
+          "name": {
+            "Type": "string",
+            "Value": "John"
+          }
+        }
+      },
+      "df9b1e57-e8d7-4ca3-8ffe-c418722cc6ac": {
+        "Fields": {
+          "age": {
+            "Type": "string",
+            "Value": "40"
+          },
+          "id": {
+            "Type": "string",
+            "Value": "df9b1e57-e8d7-4ca3-8ffe-c418722cc6ac"
+          },
+          "name": {
+            "Type": "string",
+            "Value": "Sviatoslav"
+          }
+        }
+      }
+    },
+    "Cfg": {
+      "PrimaryKey": "id"
+    },
+    "Indexes": {
+      "age": {}
+    }
+  }
+}
