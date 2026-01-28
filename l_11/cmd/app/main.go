@@ -60,6 +60,8 @@ func main() {
 		wg.Wait()
 		close(ch)
 	}()
+
+	//Не потрібен, це суто на "погратися"
 	ids := make([]string, 0, numberOffNeededRoutines)
 	idsMu := sync.Mutex{}
 	wg2 := sync.WaitGroup{}
