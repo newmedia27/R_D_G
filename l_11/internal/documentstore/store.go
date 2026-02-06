@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"routines/pkg/printobject"
 )
@@ -23,11 +24,13 @@ type Dump interface {
 }
 type Store struct {
 	Collections map[string]*Collection
+	mu          sync.RWMutex
 }
 
 func NewStore() *Store {
 	return &Store{
 		Collections: make(map[string]*Collection),
+		mu:          sync.RWMutex{},
 	}
 }
 
@@ -82,6 +85,9 @@ func (s *Store) CreateCollection(name string, cfg *CollectionConfig) (*Collectio
 	if name == "" {
 		return nil, fmt.Errorf("%w: %s", ErrEmptyCollectionName, "collection name can't be empty")
 	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if _, ok := s.Collections[name]; ok {
 		return nil, fmt.Errorf("%w: %s", ErrCollectionAlreadyExists, name)
 	}
@@ -93,6 +99,8 @@ func (s *Store) CreateCollection(name string, cfg *CollectionConfig) (*Collectio
 }
 
 func (s *Store) GetCollection(name string) (*Collection, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	if col, ok := s.Collections[name]; ok {
 		return col, nil
 	}
@@ -100,6 +108,8 @@ func (s *Store) GetCollection(name string) (*Collection, error) {
 }
 
 func (s *Store) DeleteCollection(name string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if _, ok := s.Collections[name]; ok {
 		delete(s.Collections, name)
 		return true
@@ -108,6 +118,8 @@ func (s *Store) DeleteCollection(name string) bool {
 }
 
 func (s *Store) Dump() ([]byte, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	dump, err := json.Marshal(s.Collections)
 	if err != nil {
 		return nil, err

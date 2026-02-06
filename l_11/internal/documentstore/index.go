@@ -56,11 +56,13 @@ func (i *Index) Put(doc *Document, key string) error {
 		return nil
 	}
 
+	i.mu.Lock()
 	i.Tree.ReplaceOrInsert(Item{
 		Value: valueField.Value.(string),
 		Id:    id,
 		Doc:   doc,
 	})
+	i.mu.Unlock()
 	return nil
 }
 
@@ -80,10 +82,12 @@ func (i *Index) Delete(doc *Document, key string) error {
 		return nil
 	}
 
+	i.mu.Lock()
 	i.Tree.Delete(Item{
 		Value: valueField.Value.(string),
 		Id:    id,
 		Doc:   doc,
 	})
+	i.mu.Unlock()
 	return nil
 }
