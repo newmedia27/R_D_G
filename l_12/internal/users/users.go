@@ -30,7 +30,11 @@ type UserService struct {
 	coll documentstore.Collector
 }
 
-func NewUserService(store *documentstore.Store) *UserService {
+func NewUserService(coll documentstore.Collector) *UserService {
+	return &UserService{coll: coll}
+}
+
+func NewUserServiceFormStore(store *documentstore.Store) *UserService {
 	userCollection, ok := store.Collections[collectionName]
 	if !ok {
 		col, err := store.CreateCollection(collectionName, &documentstore.CollectionConfig{
@@ -48,9 +52,7 @@ func NewUserService(store *documentstore.Store) *UserService {
 			slog.Default().Warn("Error create index", slog.Any("err", err))
 		}
 	}
-	return &UserService{
-		coll: userCollection,
-	}
+	return NewUserService(userCollection)
 }
 
 func (s *UserService) CreateUser(u UserRequest) (*User, error) {

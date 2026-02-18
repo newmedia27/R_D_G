@@ -33,7 +33,7 @@ func main() {
 	}()
 
 	store := documentstore.NewStore()
-	userService := users.NewUserService(store)
+	userService := users.NewUserServiceFormStore(store)
 
 	for {
 		conn, err := server.Accept()

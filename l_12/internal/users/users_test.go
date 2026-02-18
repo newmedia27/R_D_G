@@ -152,12 +152,6 @@ func TestUserService_ListUsers(t *testing.T) {
 			want:    make([]User, 0),
 			wantErr: nil,
 		},
-		{
-			name:    "get user empty list",
-			mocks:   make([]documentstore.Document, 0),
-			want:    make([]User, 0),
-			wantErr: nil,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
