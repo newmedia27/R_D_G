@@ -38,23 +38,22 @@ type HandleConnection struct {
 	usr  *users.UserService
 }
 
-func NewHandleConnection(conn net.Conn, usr *users.UserService) *HandleConnection {
+func NewHandleConnection(usr *users.UserService) *HandleConnection {
 	return &HandleConnection{
-		conn: conn,
-		usr:  usr,
+		usr: usr,
 	}
 }
 
-func (h *HandleConnection) Handle() {
+func (h *HandleConnection) Handle(conn net.Conn) {
 	defer func() {
-		err := h.conn.Close()
+		err := conn.Close()
 		if err != nil {
 			slog.Error("Failed to close connection", slog.Any("error", err))
 		}
 	}()
 
-	scanner := bufio.NewScanner(h.conn)
-	writer := bufio.NewWriter(h.conn)
+	scanner := bufio.NewScanner(conn)
+	writer := bufio.NewWriter(conn)
 
 	for scanner.Scan() {
 		message := scanner.Text()
@@ -62,8 +61,14 @@ func (h *HandleConnection) Handle() {
 		request, err := base64.StdEncoding.DecodeString(message)
 		if err != nil {
 			slog.Error("Failed to decode origin message", slog.Any("error", err))
-			_, _ = writer.WriteString("Failed to decode message\n")
-			_ = writer.Flush()
+			_, err = writer.WriteString("Failed to decode message\n")
+			if err != nil {
+				slog.Error("Failed to write error message", slog.Any("error", err))
+			}
+			err = writer.Flush()
+			if err != nil {
+				slog.Error("Failed to flush error message", slog.Any("error", err))
+			}
 			continue
 		}
 
@@ -73,15 +78,27 @@ func (h *HandleConnection) Handle() {
 		if command != listCommand {
 			if len(input) != 2 {
 				slog.Error("Invalid command")
-				_, _ = writer.WriteString("Invalid format command\n")
-				_ = writer.Flush()
+				_, err = writer.WriteString("Invalid format command\n")
+				if err != nil {
+					slog.Error("Failed to write error message", slog.Any("error", err))
+				}
+				err = writer.Flush()
+				if err != nil {
+					slog.Error("Failed to flush error message", slog.Any("error", err))
+				}
 				continue
 			}
 			enc, err := base64.StdEncoding.DecodeString(input[1])
 			if err != nil {
 				slog.Error("Failed to decode message", slog.Any("error", err))
-				_, _ = writer.WriteString("Failed to decode message\n")
-				_ = writer.Flush()
+				_, err = writer.WriteString("Failed to decode message\n")
+				if err != nil {
+					slog.Error("Failed to write error message", slog.Any("error", err))
+				}
+				err = writer.Flush()
+				if err != nil {
+					slog.Error("Failed to flush error message", slog.Any("error", err))
+				}
 				continue
 			}
 			msg = string(enc)
@@ -107,12 +124,18 @@ func (h *HandleConnection) Handle() {
 			_, _ = writer.WriteString(err.Error() + "\n")
 		}
 
-		_, _ = writer.WriteString(response + "\n")
-		_ = writer.Flush()
+		_, err = writer.WriteString(response + "\n")
+		if err != nil {
+			slog.Error("Failed to write response", slog.Any("error", err))
+		}
+		err = writer.Flush()
+		if err != nil {
+			slog.Error("Failed to flush response", slog.Any("error", err))
+		}
 
 		fmt.Println("Message received: ", message)
 	}
-	fmt.Println("Connection closed: ", h.conn.RemoteAddr())
+	fmt.Println("Connection closed: ", conn.RemoteAddr())
 }
 
 func (h *HandleConnection) Put(usr string) (string, error) {

@@ -40,7 +40,7 @@ func NewStoreFromDump(dump []byte) (*Store, error) {
 	}
 	for c, col := range store.Collections {
 		if col.Indexes != nil {
-			for i, _ := range col.Indexes {
+			for i := range col.Indexes {
 				delete(store.Collections[c].Indexes, i)
 
 				err = store.Collections[c].CreateIndex(i)

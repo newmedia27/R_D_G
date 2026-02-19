@@ -34,7 +34,7 @@ func main() {
 
 	store := documentstore.NewStore()
 	userService := users.NewUserServiceFormStore(store)
-
+	h := handler.NewHandleConnection(userService)
 	for {
 		conn, err := server.Accept()
 		if err != nil {
@@ -44,8 +44,7 @@ func main() {
 		fmt.Println("New connection accepted: ", conn.RemoteAddr())
 
 		go func(c net.Conn) {
-			h := handler.NewHandleConnection(c, userService)
-			h.Handle()
+			h.Handle(c)
 		}(conn)
 	}
 }

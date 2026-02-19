@@ -47,8 +47,14 @@ func main() {
 
 		}
 
-		_, _ = srvWriter.WriteString(base64.StdEncoding.EncodeToString([]byte(output)) + "\n")
-		_ = srvWriter.Flush()
+		_, err = srvWriter.WriteString(base64.StdEncoding.EncodeToString([]byte(output)) + "\n")
+		if err != nil {
+			slog.Error("Failed to write to server", slog.Any("error", err))
+		}
+		err = srvWriter.Flush()
+		if err != nil {
+			slog.Error("Failed to flush server", slog.Any("error", err))
+		}
 
 		r, err := srvReader.ReadString('\n')
 		if err != nil {
@@ -57,8 +63,14 @@ func main() {
 
 		}
 
-		_, _ = stdWriter.WriteString(r)
-		_ = stdWriter.Flush()
+		_, err = stdWriter.WriteString(r)
+		if err != nil {
+			slog.Error("Failed to write to stdout", slog.Any("error", err))
+		}
+		err = stdWriter.Flush()
+		if err != nil {
+			slog.Error("Failed to flush stdout", slog.Any("error", err))
+		}
 		fmt.Printf("Output :%s\n", output)
 
 	}
