@@ -1,0 +1,56 @@
+# .air.toml
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+  # Команда для збірки
+  cmd = "go build -o ./tmp/main ./cmd/app"
+
+  # Команда для запуску
+  bin = "tmp/main"
+
+  # Включити DLV для дебагу? (поки що false)
+  full_bin = "APP_ENV=dev ./tmp/main"
+
+  # Які файли відслідковувати
+  include_ext = ["go"]
+
+  # Які файли/папки ігнорувати
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "logs", "uploads"]
+
+  # Файли які ігнорувати
+  exclude_file = []
+
+  # Regex паттерн для файлів які ігнорувати
+  exclude_regex = ["_test.go"]
+
+  # Не відслідковувати ці папки
+  exclude_unchanged = false
+
+  # Слідкувати за vendor?
+  follow_symlink = false
+
+  # Затримка перед перезапуском (мс)
+  delay = 1000
+
+  # Зупинити старий процес перед запуском нового?
+  stop_on_error = true
+
+  # Лог build errors
+  log = "build-errors.log"
+
+[color]
+  # Кольори в консолі
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[log]
+  # Показувати час в логах
+  time = true
+
+[misc]
+  # Очистити консоль при рестарті?
+  clean_on_exit = true

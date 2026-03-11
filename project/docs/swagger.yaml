@@ -1,0 +1,606 @@
+definitions:
+  auth.AuthResponse:
+    properties:
+      access_token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  chat.AddMemberRequest:
+    properties:
+      user_id:
+        type: string
+    required:
+    - user_id
+    type: object
+  chat.ChatResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      last_message:
+        $ref: '#/definitions/models.LastMessage'
+      members:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      owner_id:
+        type: string
+      type:
+        $ref: '#/definitions/models.ChatType'
+      updated_at:
+        type: string
+    type: object
+  chat.CreateGroupRequest:
+    properties:
+      description:
+        maxLength: 200
+        type: string
+      members:
+        items:
+          type: string
+        type: array
+      name:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  message.EditMessageRequest:
+    properties:
+      text:
+        maxLength: 4096
+        minLength: 1
+        type: string
+    required:
+    - text
+    type: object
+  message.MessageResponse:
+    properties:
+      chat_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_deleted:
+        type: boolean
+      is_edited:
+        type: boolean
+      text:
+        type: string
+      type:
+        $ref: '#/definitions/models.MessageType'
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.ChatType:
+    enum:
+    - private
+    - group
+    type: string
+    x-enum-varnames:
+    - ChatTypePrivate
+    - ChatTypeGroup
+  models.LastMessage:
+    properties:
+      created_at:
+        type: string
+      text:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.MessageType:
+    enum:
+    - text
+    - file
+    type: string
+    x-enum-varnames:
+    - MessageTypeText
+    - MessageTypeFile
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  user.UsersRequest:
+    description: List of user IDs for batch fetch
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact: {}
+  description: Example API
+  title: Project (chat api)
+  version: "1.0"
+paths:
+  /api/v1/auth/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Вийти з поточного девайсу
+      tags:
+      - auth
+  /api/v1/auth/logout/all:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Вийти з усіх девайсів
+      tags:
+      - auth
+  /api/v1/auth/refresh:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Оновити токен
+      tags:
+      - auth
+  /api/v1/auth/signin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Логін
+      tags:
+      - auth
+  /api/v1/auth/signup:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Register
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/auth.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Реєстрація
+      tags:
+      - auth
+  /api/v1/chats:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/chat.ChatResponse'
+            type: array
+      summary: Отримати всі чати юзера
+      tags:
+      - chats
+  /api/v1/chats/{id}:
+    get:
+      parameters:
+      - description: Chat ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/chat.ChatResponse'
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Отримати чат по id
+      tags:
+      - chats
+  /api/v1/chats/{id}/members:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Chat ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Add member
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/chat.AddMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Додати учасника до групового чату
+      tags:
+      - chats
+  /api/v1/chats/{id}/members/{userID}:
+    delete:
+      parameters:
+      - description: Chat ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Видалити учасника з групового чату
+      tags:
+      - chats
+  /api/v1/chats/{id}/messages:
+    get:
+      parameters:
+      - description: Chat ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Message ID для пагінації
+        in: query
+        name: before
+        type: string
+      - default: 50
+        description: Кількість повідомлень
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/message.MessageResponse'
+            type: array
+      summary: Отримати історію повідомлень
+      tags:
+      - messages
+  /api/v1/chats/group:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create group
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/chat.CreateGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/chat.ChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Створити груповий чат
+      tags:
+      - chats
+  /api/v1/chats/private/{userID}:
+    post:
+      parameters:
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/chat.ChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Створити приватний чат
+      tags:
+      - chats
+  /api/v1/messages/{id}:
+    delete:
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Видалити повідомлення
+      tags:
+      - messages
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Edit message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/message.EditMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.MessageResponse'
+      summary: Редагувати повідомлення
+      tags:
+      - messages
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Перевіряє стан сервера та БД
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /users/batch:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: List of user IDs
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.UsersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/models.User'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get users by IDs
+      tags:
+      - users
+  /users/search:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Search query (username or email)
+        in: query
+        name: search
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/models.User'
+              type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Search users
+      tags:
+      - users
+swagger: "2.0"
