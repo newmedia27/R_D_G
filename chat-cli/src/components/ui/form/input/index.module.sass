@@ -1,0 +1,39 @@
+.input
+    width: 100%
+    outline: none
+    padding: 10px 16px
+    border: 2px solid $secondaryLightPurple
+    font-size: 1.3rem
+    color: $primaryText
+    background-color: $inputBgc
+    border-radius: 6px
+    transition: border-color .22s
+    outline: none
+    &::placeholder
+        color: $secondaryGray
+    &:hover
+        border-color: $primaryColor
+    &:focus
+        border-color: $primaryColor
+    &_error, &_error:focus
+        border-color: red
+
+    &__wrapper
+        max-width: 100%
+        overflow: hidden
+
+.label
+    display: block
+    font-weight: 500
+    font-size: 1rem
+    color: $secondaryDarkGray
+    margin-bottom: 5px
+.error
+    display: block
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+    word-break: break-all
+    padding: 5px
+    font-size: 0.8rem
+    color: red

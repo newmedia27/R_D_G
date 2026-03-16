@@ -1,0 +1,74 @@
+.item
+    display: flex
+    align-items: center
+    gap: 10px
+    padding: 10px 8px
+    border-radius: 8px
+    margin: 1px 0
+    cursor: pointer
+    transition: background 0.15s
+    border: 1px solid transparent
+    &:hover
+        border-color: $primaryColor
+
+.active
+    background: $secondaryLightPurple
+
+.avatarWrap
+    position: relative
+    flex-shrink: 0
+
+.avatar
+    width: 40px
+    height: 40px
+    border-radius: 50%
+    background: $secondaryLightPurple
+    color: $primaryColor
+    display: flex
+    align-items: center
+    justify-content: center
+    font-size: 15px
+    font-weight: 600
+
+.onlineDot
+    position: absolute
+    bottom: 1px
+    right: 1px
+    width: 9px
+    height: 9px
+    border-radius: 50%
+    background: #22c55e
+    border: 2px solid $secondarySurfaceBackground
+
+.info
+    flex: 1
+    min-width: 0
+    display: flex
+    flex-direction: column
+    gap: 2px
+
+.top
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+.name
+    font-size: 14px
+    font-weight: 600
+    color: $primaryText
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+.time
+    font-size: 11px
+    color: $secondaryGray
+    flex-shrink: 0
+    margin-left: 8px
+
+.lastMsg
+    font-size: 12px
+    color: $secondaryGray
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis

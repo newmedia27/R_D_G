@@ -1,0 +1,65 @@
+.wrapper
+    background-color: $primaryWhite
+    display: flex
+    flex-direction: column
+    height: 100%
+.header
+    padding: 0 30px
+    border-bottom: 1px solid $secondaryLightPurple
+    font-size: 1rem
+    height: 50px
+    display: flex
+    align-items: center
+    justify-content: space-between
+.content
+    padding: 20px 30px
+    flex: 1
+    max-height: calc(100vh - 50px - 76px)
+    overflow-y: auto
+
+.user
+    display: flex
+    align-items: center
+    gap: 10px
+
+.avatarWrapper
+    position: relative
+
+.avatar
+    width: 36px
+    height: 36px
+    border-radius: 50%
+    background: $secondaryLightPurple
+    color: $primaryColor
+    display: flex
+    align-items: center
+    justify-content: center
+    font-size: 14px
+    font-weight: 600
+
+.info
+    display: flex
+    flex-direction: column
+    gap: 2px
+
+.name
+    font-size: 15px
+    font-weight: 700
+    color: $primaryText
+
+.status
+    display: flex
+    align-items: center
+    gap: 5px
+    font-size: 12px
+    color: $secondaryGray
+
+.onlineDot
+    width: 7px
+    height: 7px
+    border-radius: 50%
+    background: #22c55e
+    display: inline-block
+
+.message__input_wrapper
+    flex-shrink: 0
