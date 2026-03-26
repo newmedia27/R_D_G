@@ -18,9 +18,7 @@ export async function searchUsersRequest(
 	return await api.get<SearchResponse>(url)
 }
 
-export async function getProfileRequest(): Promise<
-	AxiosResponse<Record<string, User>>
-> {
+export async function getProfileRequest(): Promise<AxiosResponse<UserMap>> {
 	const url = `/users/profile`
-	return await api.get<Record<string, User>>(url)
+	return await api.get<UserMap>(url)
 }
