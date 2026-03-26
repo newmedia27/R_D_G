@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"project/internal/clients/livekit"
 	"project/internal/clients/mongodb"
 	"project/internal/config"
 )
 
 type Clients struct {
-	Mongo *mongodb.Client
+	Mongo   *mongodb.Client
+	LiveKit *livekit.Client
 }
 
 var (
@@ -22,7 +24,10 @@ func NewClients(ctx context.Context, cfg *config.Config) (*Clients, error) {
 		return nil, fmt.Errorf("%s", ErrConnectToMongo)
 	}
 
+	liveKitClient := livekit.NewClient(cfg)
+
 	return &Clients{
-		Mongo: client,
+		Mongo:   client,
+		LiveKit: liveKitClient,
 	}, nil
 }

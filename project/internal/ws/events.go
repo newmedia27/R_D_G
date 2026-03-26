@@ -1,5 +1,7 @@
 package ws
 
+import "project/internal/models"
+
 type EventType string
 
 const (
@@ -17,8 +19,14 @@ const (
 	EventTyping         EventType = "typing"
 	EventStopTyping     EventType = "stop_typing"
 	EventError          EventType = "error"
+	EventChatCreated    EventType = "chat.created"
 
 	EventAuthExpiringSoon EventType = "auth.expiring_soon"
+
+	EventCallInvite EventType = "call.invite"
+	EventCallAccept EventType = "call.accept"
+	EventCallReject EventType = "call.reject"
+	EventCallEnd    EventType = "call.end"
 )
 
 // FE->
@@ -27,14 +35,19 @@ type IncomingEvent struct {
 	ChatID    string    `json:"chat_id,omitempty"`
 	MessageID string    `json:"message_id,omitempty"`
 	Text      string    `json:"text,omitempty"`
+
+	RoomID string `json:"room_id,omitempty"`
 }
 
 // BE->
 type OutgoingEvent struct {
-	Type      EventType `json:"type"`
-	ChatID    string    `json:"chat_id,omitempty"`
-	MessageID string    `json:"message_id,omitempty"`
-	UserID    string    `json:"user_id,omitempty"`
-	Message   any       `json:"message,omitempty"`
-	Error     string    `json:"error,omitempty"`
+	Type      EventType    `json:"type"`
+	ChatID    string       `json:"chat_id,omitempty"`
+	MessageID string       `json:"message_id,omitempty"`
+	UserID    string       `json:"user_id,omitempty"`
+	Message   any          `json:"message,omitempty"`
+	Error     string       `json:"error,omitempty"`
+	Chat      *models.Chat `json:"chat,omitempty"`
+
+	RoomID string `json:"room_id,omitempty"`
 }

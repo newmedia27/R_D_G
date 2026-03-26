@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mongodb:
@@ -14,6 +14,18 @@ services:
     volumes:
       - mongodb_data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: livekit
+    restart: always
+    ports:
+      - "7880:7880"        # HTTP API
+      - "7881:7881"        # WebRTC TCP
+      - "7882:7882/udp"    # WebRTC UDP
+    volumes:
+      - ./livekit.yaml:/livekit.yaml
+    command: --config /livekit.yaml
 
 volumes:
   mongodb_data:

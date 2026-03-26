@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"project/internal/config"
 	"project/internal/handlers/auth"
+	"project/internal/handlers/call"
 	"project/internal/handlers/chat"
 	"project/internal/handlers/message"
 	"project/internal/handlers/user"
@@ -26,6 +27,7 @@ type Handlers struct {
 	Chat    *chat.Handler
 	Message *message.Handler
 	Ws      *ws.Handler
+	Call    *call.Handler
 }
 
 func NewHandlers(m *middlewares.Middlewares, s *services.Services, cfg *config.Config, hub *ws.Hub) *Handlers {
@@ -36,9 +38,10 @@ func NewHandlers(m *middlewares.Middlewares, s *services.Services, cfg *config.C
 
 		Auth:    auth.NewHandler(s, v, cfg),
 		Users:   user.NewHandler(s, v),
-		Chat:    chat.NewHandler(s, v),
+		Chat:    chat.NewHandler(s, v, hub),
 		Message: message.NewHandler(s, v),
 		Ws:      ws.NewHandler(s, hub),
+		Call:    call.NewHandler(s, cfg),
 	}
 }
 
@@ -107,6 +110,9 @@ func (h *Handlers) InitRouters(app *fiber.App) {
 		protected.Get("/chats/:id", h.Chat.GetChat)
 		protected.Post("/chats/:id/members", h.Chat.AddMember)
 		protected.Delete("/chats/:id/members/:userId", h.Chat.RemoveMember)
+
+		//call
+		protected.Post("/calls/token", h.Call.GetToken)
 
 		// Messages
 		protected.Get("/chats/:id/messages", h.Message.GetMessages)

@@ -1,23 +1,28 @@
 package chat
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
+	"project/internal/logger"
 	"project/internal/models"
 	"project/internal/services"
+	"project/internal/ws"
 )
 
 type Handler struct {
 	services  *services.Services
 	validator *validator.Validate
+	hub       *ws.Hub
 }
 
-func NewHandler(s *services.Services, v *validator.Validate) *Handler {
+func NewHandler(s *services.Services, v *validator.Validate, hub *ws.Hub) *Handler {
 	return &Handler{
 		services:  s,
 		validator: v,
+		hub:       hub,
 	}
 }
 
@@ -52,6 +57,26 @@ func (h *Handler) CreateGroup(c fiber.Ctx) error {
 			"error": "internal server error",
 		})
 	}
+	data, err := json.Marshal(ws.OutgoingEvent{
+		Type: ws.EventChatCreated,
+		Chat: chat,
+	})
+	if err != nil {
+		logger.LogErrorContext(c.Context(), err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "internal server error",
+		})
+	}
+	members := make([]string, 0, len(chat.Members)-1)
+	for _, m := range chat.Members {
+		if m != ownerID {
+			members = append(members, m)
+		}
+	}
+	h.hub.Broadcast(&ws.BroadcastMsg{
+		UserIDs: members,
+		Data:    data,
+	})
 
 	return c.Status(fiber.StatusCreated).JSON(chat)
 }
@@ -86,6 +111,26 @@ func (h *Handler) CreatePrivate(c fiber.Ctx) error {
 			"error": "internal server error",
 		})
 	}
+	data, err := json.Marshal(ws.OutgoingEvent{
+		Type: ws.EventChatCreated,
+		Chat: chat,
+	})
+	if err != nil {
+		logger.LogErrorContext(c.Context(), err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "internal server error",
+		})
+	}
+	members := make([]string, 0, len(chat.Members)-1)
+	for _, m := range chat.Members {
+		if m != userID {
+			members = append(members, m)
+		}
+	}
+	h.hub.Broadcast(&ws.BroadcastMsg{
+		UserIDs: members,
+		Data:    data,
+	})
 
 	return c.Status(fiber.StatusOK).JSON(chat)
 }

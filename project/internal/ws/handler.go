@@ -60,6 +60,14 @@ func (h *Handler) onMessage(c *Client, data []byte) {
 		h.handleTyping(c, event)
 	case EventUserStopTyping:
 		h.handleStopTyping(c, event)
+	case EventCallInvite:
+		h.handleCallEvent(c, event, EventCallInvite)
+	case EventCallAccept:
+		h.handleCallEvent(c, event, EventCallAccept)
+	case EventCallReject:
+		h.handleCallEvent(c, event, EventCallReject)
+	case EventCallEnd:
+		h.handleCallEvent(c, event, EventCallEnd)
 	default:
 		h.sendError(c, "unknown event type")
 	}
@@ -245,7 +253,7 @@ func (h *Handler) handleTyping(c *Client, event IncomingEvent) {
 		}
 	}
 	h.hub.Broadcast(&BroadcastMsg{
-		chat.Members, data,
+		members, data,
 	})
 }
 
@@ -281,6 +289,37 @@ func (h *Handler) handleStopTyping(c *Client, event IncomingEvent) {
 		}
 	}
 	h.hub.Broadcast(&BroadcastMsg{
-		chat.Members, data,
+		members, data,
 	})
+}
+
+func (h *Handler) handleCallEvent(c *Client, event IncomingEvent, eventType EventType) {
+	if event.RoomID == "" {
+		h.sendError(c, "room_id is required")
+		return
+	}
+	chat, err := h.services.Chat.GetChat(context.Background(), event.RoomID, c.UserID)
+	if err != nil {
+		if errors.Is(err, models.ErrForbidden) {
+			h.sendError(c, "forbidden")
+			return
+		}
+		h.sendError(c, "internal server error")
+		return
+	}
+	data, err := json.Marshal(OutgoingEvent{
+		Type:   eventType,
+		RoomID: event.RoomID,
+		UserID: c.UserID,
+	})
+	if err != nil {
+		return
+	}
+	members := make([]string, 0, len(chat.Members)-1)
+	for _, m := range chat.Members {
+		if m != c.UserID {
+			members = append(members, m)
+		}
+	}
+	h.hub.Broadcast(&BroadcastMsg{members, data})
 }

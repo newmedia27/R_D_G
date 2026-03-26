@@ -22,6 +22,10 @@ type Config struct {
 	AllowedOrigins    []string
 	AllowCredentials  bool
 	IsProduction      bool
+
+	LiveKitURL       string
+	LiveKitAPIKey    string
+	LiveKitAPISecret string
 }
 
 type parseEnvTypes interface {
@@ -76,6 +80,10 @@ func LoadConfig() (*Config, error) {
 		AllowedOrigins:    splitEnv("ALLOWED_ORIGINS", "*"),
 		AllowCredentials:  getEnv("ALLOWED_CREDENTIALS", false),
 		IsProduction:      getEnv("IS_PRODUCTION", false),
+
+		LiveKitURL:       getEnv("LIVEKIT_URL", "ws://localhost:7880"),
+		LiveKitAPIKey:    getEnv("LIVEKIT_API_KEY", "devkey"),
+		LiveKitAPISecret: getEnv("LIVEKIT_API_SECRET", "secret"),
 	}
 	return cfg, nil
 }
