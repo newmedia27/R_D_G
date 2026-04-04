@@ -1,0 +1,46 @@
+.search
+    margin-bottom: 12px
+
+.searchInput
+    width: 100%
+    padding: 9px 12px
+    border: 1px solid $secondaryLightPurple
+    border-radius: 8px
+    font-size: 13px
+    background: $inputBgc
+    outline: none
+    color: $primaryText
+    box-sizing: border-box
+    &::placeholder
+        color: $secondaryGray
+    &:focus
+        border-color: $primaryColor
+
+.userList
+    flex: 1
+    overflow-y: auto
+    display: flex
+    flex-direction: column
+    gap: 4px
+
+.footer
+    padding-top: 12px
+    border-top: 1px solid #F0EEFF
+    margin-top: 12px
+
+.submitBtn
+    width: 100%
+    padding: 11px
+    background: $primaryColor
+    color: $primaryWhite
+    border: none
+    border-radius: 10px
+    font-size: 14px
+    font-weight: 600
+    cursor: pointer
+    transition: background 0.15s
+    &:hover
+        background: $primaryHoverColor
+    &:disabled
+        opacity: 0.4
+        cursor: not-allowed

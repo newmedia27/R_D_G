@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: app
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: livekit
+    restart: always
+    ports:
+      - "7880:7880"        # HTTP API
+      - "7881:7881"        # WebRTC TCP
+      - "7882:7882/udp"    # WebRTC UDP
+    volumes:
+      - ./livekit.yaml:/livekit.yaml
+    command: --config /livekit.yaml
+
+volumes:
+  mongodb_data:

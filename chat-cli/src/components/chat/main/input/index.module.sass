@@ -1,0 +1,62 @@
+.wrapper
+    padding: 12px 24px 20px
+    border-top: 1px solid $secondaryLightPurple
+    background: $primaryWhite
+
+.inner
+    display: flex
+    align-items: flex-end
+    gap: 8px
+    // background: $inputBgc TODO:
+    border-radius: 12px
+    padding: 6px 8px 6px 12px
+    border: 1px solid $secondaryLightPurple
+    transition: border-color 0.15s
+    &:focus-within
+        border-color: $primaryColor
+
+.input
+    flex: 1
+    border: none
+    background: none
+    outline: none
+    font-size: 14px
+    color: $primaryText
+    padding: 4px 0
+    resize: none
+    overflow-y: auto
+    max-height: 120px
+    line-height: 1.5
+    font-family: inherit
+    &::placeholder
+        color: $secondaryGray
+
+.attachBtn
+    background: none
+    border: none
+    cursor: pointer
+    font-size: 16px
+    padding: 4px
+    color: $secondaryGray
+    flex-shrink: 0
+
+.sendBtn
+    background: $primaryColor
+    border: none
+    cursor: pointer
+    color: $primaryWhite
+    width: 32px
+    height: 32px
+    border-radius: 8px
+    font-size: 16px
+    font-weight: 700
+    display: flex
+    align-items: center
+    justify-content: center
+    flex-shrink: 0
+    transition: opacity 0.15s, background 0.15s
+    &:disabled
+        opacity: 0.4
+        cursor: not-allowed
+    &:not(:disabled):hover
+        background: $primaryHoverColor
