@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    container_name: app-doc-container
+    ports:
+      - "8081:8080"
+
